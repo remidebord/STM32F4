@@ -46,8 +46,11 @@ class TimeOut
 		TimeOut(TIM_TypeDef* TIMx);
 		void attach(void(*f)(void), int ms);
 		void attach_us(void(*f)(void), int us);
+		void set(int ms);
+		void set_us(int us);
 		void detach(void);
 		void start(void);
+		char end(void);
 };
 
 class PwmOut

@@ -259,12 +259,26 @@ TimeOut :: TimeOut(TIM_TypeDef* TIMx)
  */
 
 void TimeOut :: attach(void(*f)(void), int ms)
-{
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	
+{	
 	/* Attribute function adress to the function pointer */	
 	TimUpdateInterrupt[m_index] = f;
 	timUpdateAttach[m_index] = 1;
+	
+	this->set(ms);
+}
+
+/*!
+ *  \brief Set timeout in ms
+ *
+ *  Modification de la valeur du compteur (ms)
+ *
+ *  \param ms : periodic time (ms)
+ *
+ */
+
+void TimeOut :: set(int ms)
+{
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	
 	/* Time base configuration */
   if((m_tim == TIM1) || (m_tim == TIM8) || (m_tim == TIM9) || (m_tim == TIM10) || (m_tim == TIM11))
@@ -278,6 +292,8 @@ void TimeOut :: attach(void(*f)(void), int ms)
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0; //!!
   TIM_TimeBaseInit(m_tim, &TIM_TimeBaseStructure);
+	
+	TIM_SelectOnePulseMode(m_tim, TIM_OPMode_Single);
  
   /* Enable TIMx Update Interrupt */
   TIM_ITConfig(m_tim, TIM_IT_Update, ENABLE);
@@ -295,11 +311,25 @@ void TimeOut :: attach(void(*f)(void), int ms)
 
 void TimeOut :: attach_us(void(*f)(void), int us)
 {
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	
 	/* Attribute function adress to the function pointer */	
 	TimUpdateInterrupt[m_index] = f;
 	timUpdateAttach[m_index] = 1;
+	
+	this->set_us(us);
+}
+
+/*!
+ *  \brief Set timeout in us
+ *
+ *  Modification de la valeur du compteur (us)
+ *
+ *  \param ms : periodic time (us)
+ *
+ */
+
+void TimeOut :: set_us(int us)
+{
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	
 	/* Time base configuration */
   if((m_tim == TIM1) || (m_tim == TIM8) || (m_tim == TIM9) || (m_tim == TIM10) || (m_tim == TIM11))
@@ -313,6 +343,8 @@ void TimeOut :: attach_us(void(*f)(void), int us)
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0; //!!
   TIM_TimeBaseInit(m_tim, &TIM_TimeBaseStructure);
+	
+	TIM_SelectOnePulseMode(m_tim, TIM_OPMode_Single);
  
   /* Enable TIMx Update Interrupt */
   TIM_ITConfig(m_tim, TIM_IT_Update, ENABLE);
@@ -347,6 +379,25 @@ void TimeOut :: start(void)
 	
 	/* Enable TIMx */
   TIM_Cmd(m_tim,ENABLE);
+}
+
+/*!
+ *  \brief Timeout reach end value
+ *
+ *  Valeur du compteur égale à sa valeur de rechargement
+ *
+ */
+
+char TimeOut :: end(void)
+{
+	if(m_tim->CNT == 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 /*!
