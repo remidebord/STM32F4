@@ -53,6 +53,23 @@ class TimeOut
 		char end(void);
 };
 
+class Timer
+{
+	private:
+		
+		TIM_TypeDef* m_tim;
+	
+	public:
+		
+		Timer(TIM_TypeDef* TIMx);
+		void start(void);
+		void stop(void);
+		void reset(void);
+		int read(void);
+		int read_ms(void);
+		int read_us(void);
+};
+
 class PwmOut
 {
 	private:

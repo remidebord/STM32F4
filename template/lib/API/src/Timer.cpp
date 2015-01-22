@@ -403,6 +403,136 @@ char TimeOut :: end(void)
 /*!
  *  \brief Constructor
  *
+ *  Constructeur de la classe Timer (used a 32 bit timer like TIM2 or TIM5!)
+ *
+ *  \param TIMx : Timer number
+ *
+ */
+
+Timer :: Timer(TIM_TypeDef* TIMx)
+{ 
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	
+	m_tim = TIMx;
+	
+  /* TIMx clock enable */
+  if(m_tim == TIM1) RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+	else if(m_tim == TIM2) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	else if(m_tim == TIM3) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+	else if(m_tim == TIM4) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+	else if(m_tim == TIM5) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+	else if(m_tim == TIM6) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
+	else if(m_tim == TIM7) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE);
+	else if(m_tim == TIM8) RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+	else if(m_tim == TIM9) RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, ENABLE);
+	else if(m_tim == TIM10) RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM10, ENABLE);
+	else if(m_tim == TIM11) RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM11, ENABLE);
+	else if(m_tim == TIM12) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM12, ENABLE);
+	else if(m_tim == TIM13) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM13, ENABLE);
+	else if(m_tim == TIM14) RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM14, ENABLE);
+	
+	/* Time base configuration */
+  if((m_tim == TIM1) || (m_tim == TIM8) || (m_tim == TIM9) || (m_tim == TIM10) || (m_tim == TIM11))
+	{
+		TIM_TimeBaseStructure.TIM_Prescaler = (((SystemCoreClock / APB2_PRESC) * 2) / 1000000) - 1; // 168 MHz / 1000000 (1 us)
+	}
+  else TIM_TimeBaseStructure.TIM_Prescaler = (((SystemCoreClock / APB1_PRESC) * 2) / 1000000) - 1; // 84 MHz / 1000000 (1 us)
+	
+  
+	// 32 bits timer ?
+	if((m_tim == TIM2) || (m_tim == TIM5))
+	{
+		TIM_TimeBaseStructure.TIM_Period = 0xFFFFFFFF;
+	}
+	else
+	{
+		TIM_TimeBaseStructure.TIM_Period = 0xFFFF;
+	}
+	
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0; //!!
+  TIM_TimeBaseInit(m_tim, &TIM_TimeBaseStructure);
+}
+
+/*!
+ *  \brief Start counter
+ *
+ *  Lancement du compteur
+ *
+ */
+
+void Timer :: start(void)
+{
+	/* Enable TIMx */
+  TIM_Cmd(m_tim, ENABLE);
+}
+
+/*!
+ *  \brief Stop counter
+ *
+ *  Arrêt du compteur
+ *
+ */
+
+void Timer :: stop(void)
+{
+	/* Enable TIMx */
+  TIM_Cmd(m_tim, DISABLE);
+}
+
+/*!
+ *  \brief Reset counter
+ *
+ *  Remise à zéro de la valeur du compteur
+ *
+ */
+
+void Timer :: reset(void)
+{
+	/* Reset counter */
+	TIM_SetCounter(m_tim, 0);
+}
+
+/*!
+ *  \brief Get the time passed in seconds
+ *
+ *  Temps passé en secondes
+ *
+ */
+
+int Timer :: read(void)
+{
+	return (this->read_ms() / 1000);
+}
+
+/*!
+ *  \brief Get the time passed in mili-seconds
+ *
+ *  Temps passé en milli-secondes
+ *
+ */
+
+int Timer :: read_ms(void)
+{
+	return (this->read_us() / 1000);
+}
+
+/*!
+ *  \brief Get the time passed in micro-seconds
+ *
+ *  Temps passé en micro-secondes
+ *
+ */
+
+int Timer :: read_us(void)
+{
+	return TIM_GetCounter(m_tim);
+}
+
+/*!
+ *  \brief Constructor
+ *
  *  Constructeur de la classe PwmOut
  *
  *  \param GPIO_c : pwm pin
