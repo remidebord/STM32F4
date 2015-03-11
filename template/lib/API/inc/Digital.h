@@ -53,6 +53,7 @@ class InterruptIn
 		InterruptIn(GPIO_common GPIO_c);
 		void rise(void(*f)(void));
 		void fall(void(*f)(void));
+		void risefall(void(*f)(void));
 		void mode(GPIOPuPd_TypeDef pull);
 };
 

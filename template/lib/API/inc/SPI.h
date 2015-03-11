@@ -29,10 +29,13 @@ class SPI
 		int m_misoPin;
 		int m_misoPinSource;
 	
+		char m_mode;
+	
 	public:
 		
 	SPI(SPI_TypeDef* SPIx, GPIO_common GPIO_c_cs, GPIO_common GPIO_c_sck, GPIO_common GPIO_c_mosi, GPIO_common GPIO_c_miso);
 
+	void mode(char x);
 	void cs(char x);
 	char write(char c);
 	void write(char* buffer, int length);

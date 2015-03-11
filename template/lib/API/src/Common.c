@@ -86,6 +86,40 @@ GPIO_common PE13 = {GPIOE, GPIO_Pin_13, GPIO_PinSource13};
 GPIO_common PE14 = {GPIOE, GPIO_Pin_14, GPIO_PinSource14};
 GPIO_common PE15 = {GPIOE, GPIO_Pin_15, GPIO_PinSource15};
 
+GPIO_common PF0 = {GPIOF, GPIO_Pin_0, GPIO_PinSource0};
+GPIO_common PF1 = {GPIOF, GPIO_Pin_1, GPIO_PinSource1};
+GPIO_common PF2 = {GPIOF, GPIO_Pin_2, GPIO_PinSource2};
+GPIO_common PF3 = {GPIOF, GPIO_Pin_3, GPIO_PinSource3};
+GPIO_common PF4 = {GPIOF, GPIO_Pin_4, GPIO_PinSource4};
+GPIO_common PF5 = {GPIOF, GPIO_Pin_5, GPIO_PinSource5};
+GPIO_common PF6 = {GPIOF, GPIO_Pin_6, GPIO_PinSource6};
+GPIO_common PF7 = {GPIOF, GPIO_Pin_7, GPIO_PinSource7};
+GPIO_common PF8 = {GPIOF, GPIO_Pin_8, GPIO_PinSource8};
+GPIO_common PF9 = {GPIOF, GPIO_Pin_9, GPIO_PinSource9};
+GPIO_common PF10 = {GPIOF, GPIO_Pin_10, GPIO_PinSource10};
+GPIO_common PF11 = {GPIOF, GPIO_Pin_11, GPIO_PinSource11};
+GPIO_common PF12 = {GPIOF, GPIO_Pin_12, GPIO_PinSource12};
+GPIO_common PF13 = {GPIOF, GPIO_Pin_13, GPIO_PinSource13};
+GPIO_common PF14 = {GPIOF, GPIO_Pin_14, GPIO_PinSource14};
+GPIO_common PF15 = {GPIOF, GPIO_Pin_15, GPIO_PinSource15};
+
+GPIO_common PG0 = {GPIOG, GPIO_Pin_0, GPIO_PinSource0};
+GPIO_common PG1 = {GPIOG, GPIO_Pin_1, GPIO_PinSource1};
+GPIO_common PG2 = {GPIOG, GPIO_Pin_2, GPIO_PinSource2};
+GPIO_common PG3 = {GPIOG, GPIO_Pin_3, GPIO_PinSource3};
+GPIO_common PG4 = {GPIOG, GPIO_Pin_4, GPIO_PinSource4};
+GPIO_common PG5 = {GPIOG, GPIO_Pin_5, GPIO_PinSource5};
+GPIO_common PG6 = {GPIOG, GPIO_Pin_6, GPIO_PinSource6};
+GPIO_common PG7 = {GPIOG, GPIO_Pin_7, GPIO_PinSource7};
+GPIO_common PG8 = {GPIOG, GPIO_Pin_8, GPIO_PinSource8};
+GPIO_common PG9 = {GPIOG, GPIO_Pin_9, GPIO_PinSource9};
+GPIO_common PG10 = {GPIOG, GPIO_Pin_10, GPIO_PinSource10};
+GPIO_common PG11 = {GPIOG, GPIO_Pin_11, GPIO_PinSource11};
+GPIO_common PG12 = {GPIOG, GPIO_Pin_12, GPIO_PinSource12};
+GPIO_common PG13 = {GPIOG, GPIO_Pin_13, GPIO_PinSource13};
+GPIO_common PG14 = {GPIOG, GPIO_Pin_14, GPIO_PinSource14};
+GPIO_common PG15 = {GPIOG, GPIO_Pin_15, GPIO_PinSource15};
+
 // TIM
 TIM_common TIM1_CH1 = {TIM1, TIM_Channel_1, 0, GPIO_AF_TIM1};
 TIM_common TIM1_CH2 = {TIM1, TIM_Channel_2, 1, GPIO_AF_TIM1};

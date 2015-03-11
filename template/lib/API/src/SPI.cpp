@@ -45,27 +45,37 @@ SPI :: SPI(SPI_TypeDef* SPIx, GPIO_common GPIO_c_cs, GPIO_common GPIO_c_sck, GPI
 	m_misoPort = GPIO_c_miso.port;
 	m_misoPin = GPIO_c_miso.pin;
 	m_misoPinSource = GPIO_c_miso.pinSource;
+	
+	m_mode = 1;
 
   /* GPIO Periph clock enable */
   if(m_csPort == GPIOA) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	else if(m_csPort == GPIOB) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	else if(m_csPort == GPIOC) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	else if(m_csPort == GPIOD) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	else if(m_csPort == GPIOE) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	else if(m_csPort == GPIOF) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
 	
   if(m_sckPort == GPIOA) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	else if(m_sckPort == GPIOB) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	else if(m_sckPort == GPIOC) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	else if(m_sckPort == GPIOD) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	else if(m_sckPort == GPIOE) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	else if(m_sckPort == GPIOF) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
 	
 	if(m_mosiPort == GPIOA) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	else if(m_mosiPort == GPIOB) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	else if(m_mosiPort == GPIOC) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	else if(m_mosiPort == GPIOD) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	else if(m_mosiPort == GPIOE) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	else if(m_mosiPort == GPIOF) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
 	
 	if(m_misoPort == GPIOA) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	else if(m_misoPort == GPIOB) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	else if(m_misoPort == GPIOC) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	else if(m_misoPort == GPIOD) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	else if(m_misoPort == GPIOE) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	else if(m_misoPort == GPIOF) RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
 
   /* SD_SPI Periph clock enable */
   if(m_spi == SPI1) RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
@@ -111,7 +121,7 @@ SPI :: SPI(SPI_TypeDef* SPIx, GPIO_common GPIO_c_cs, GPIO_common GPIO_c_sck, GPI
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low; 		//SPI_CPOL_High;
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge; 	//SPI_CPHA_2Edge;
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8; // 84 / 8 = 10.5 Mhz
 
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB; //SPI_FirstBit_LSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
@@ -126,6 +136,19 @@ SPI :: SPI(SPI_TypeDef* SPIx, GPIO_common GPIO_c_cs, GPIO_common GPIO_c_sck, GPI
   SPI_SSOutputCmd(m_spi, DISABLE);
   
   SPI_Cmd(m_spi, ENABLE); /*!< SPI enable */
+}
+
+/*!
+ *  \brief SPI mode
+ *
+ *  Modifie le mode de fonctionnement (RxTX = 1 ou Tx only = 0).
+ *
+ *  \param x: cs state
+ */
+
+void SPI :: mode(char x)
+{
+	m_mode = x;
 }
 
 /*!
@@ -157,8 +180,11 @@ char SPI :: write(char c)
 	/* Wait until the transmit buffer is empty */
   while (SPI_I2S_GetFlagStatus(m_spi, SPI_I2S_FLAG_TXE) == RESET);
 	
-	/* Wait until a data is received */
-  while (SPI_I2S_GetFlagStatus(m_spi, SPI_I2S_FLAG_RXNE) == RESET);
+	if(m_mode)
+	{
+		/* Wait until a data is received */
+		while (SPI_I2S_GetFlagStatus(m_spi, SPI_I2S_FLAG_RXNE) == RESET);
+	}
 	
 	/* Wait until periheral is free */
   while (SPI_I2S_GetFlagStatus(m_spi, SPI_I2S_FLAG_BSY));

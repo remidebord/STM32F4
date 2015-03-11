@@ -111,6 +111,39 @@ extern GPIO_common PE13;
 extern GPIO_common PE14;
 extern GPIO_common PE15;
 
+extern GPIO_common PF0;
+extern GPIO_common PF1;
+extern GPIO_common PF2;
+extern GPIO_common PF3;
+extern GPIO_common PF4;
+extern GPIO_common PF5;
+extern GPIO_common PF6;
+extern GPIO_common PF7;
+extern GPIO_common PF8;
+extern GPIO_common PF9;
+extern GPIO_common PF10;
+extern GPIO_common PF11;
+extern GPIO_common PF12;
+extern GPIO_common PF13;
+extern GPIO_common PF14;
+extern GPIO_common PF15;
+
+extern GPIO_common PG0;
+extern GPIO_common PG1;
+extern GPIO_common PG2;
+extern GPIO_common PG3;
+extern GPIO_common PG4;
+extern GPIO_common PG5;
+extern GPIO_common PG6;
+extern GPIO_common PG7;
+extern GPIO_common PG8;
+extern GPIO_common PG9;
+extern GPIO_common PG10;
+extern GPIO_common PG11;
+extern GPIO_common PG12;
+extern GPIO_common PG13;
+extern GPIO_common PG14;
+extern GPIO_common PG15;
 
 // TIM
 extern TIM_common TIM1_CH1;

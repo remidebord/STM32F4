@@ -249,6 +249,8 @@ InterruptIn :: InterruptIn(GPIO_common GPIO_c)
   
   /* Configure "pin" as input floating */
   GPIO_InitStructure.GPIO_Pin = m_pin;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Fast_Speed;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(m_port, &GPIO_InitStructure);
@@ -275,8 +277,8 @@ InterruptIn :: InterruptIn(GPIO_common GPIO_c)
 
   /* Enable and set EXTI "pin" Interrupt to the lowest priority */
   NVIC_InitStructure.NVIC_IRQChannel = m_irqVector;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
@@ -327,6 +329,31 @@ void InterruptIn :: fall(void(*f)(void))
   EXTI_InitStructure.EXTI_Line = (uint32_t) m_pin;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;  
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+}
+
+/*!
+ *  \brief Set callback function on a falling and rising edge
+ *
+ *  Association de la fonction de rappel et génération de l'interruption sur front descendant et montant.
+ *
+ *  \param void(*f)(void) : function address
+ *
+ */
+
+void InterruptIn :: risefall(void(*f)(void))
+{
+	EXTI_InitTypeDef   EXTI_InitStructure;
+	
+	/* Attribute function adress to the function pointer */
+	ExternalInterruptPin[m_pinSource] = f;
+	ExternalInterruptAttach[m_pinSource] = 1;
+	
+	/* Configure EXTI "pin" */
+  EXTI_InitStructure.EXTI_Line = (uint32_t) m_pin;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;  
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 }
@@ -479,11 +506,11 @@ extern "C"
 		
 		if(EXTI_GetITStatus(EXTI_Line11) != RESET)
 		{
+			/* Clear the EXTI line 10 pending bit */
+			EXTI_ClearITPendingBit(EXTI_Line11);
+			
 			/* Call function */
 			if(ExternalInterruptAttach[11]) (*ExternalInterruptPin[11])();
-			
-			/* Clear the EXTI line 11 pending bit */
-			EXTI_ClearITPendingBit(EXTI_Line11);
 		}
 
 		if(EXTI_GetITStatus(EXTI_Line12) != RESET)
