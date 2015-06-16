@@ -28,6 +28,7 @@ SPI :: SPI(SPI_TypeDef* SPIx, GPIO_common GPIO_c_cs, GPIO_common GPIO_c_sck, GPI
 {
   GPIO_InitTypeDef  GPIO_InitStructure;
   SPI_InitTypeDef   SPI_InitStructure;
+	char afSpi;
 	
 	m_spi = SPIx;
 	
@@ -109,10 +110,16 @@ SPI :: SPI(SPI_TypeDef* SPIx, GPIO_common GPIO_c_cs, GPIO_common GPIO_c_sck, GPI
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(m_csPort, &GPIO_InitStructure);
 
+	if(m_spi == SPI1) afSpi = GPIO_AF_SPI1;
+	else if(m_spi == SPI2) afSpi = GPIO_AF_SPI2;
+	else if(m_spi == SPI3) afSpi = GPIO_AF_SPI3;
+	else if(m_spi == SPI4) afSpi = GPIO_AF_SPI4;
+	else if(m_spi == SPI5) afSpi = GPIO_AF_SPI5;
+
   /* Alternate function */
-  GPIO_PinAFConfig(m_sckPort, m_sckPinSource, GPIO_AF_SPI1);
-	GPIO_PinAFConfig(m_mosiPort, m_mosiPinSource, GPIO_AF_SPI1);
-  GPIO_PinAFConfig(m_misoPort, m_misoPinSource, GPIO_AF_SPI1);
+  GPIO_PinAFConfig(m_sckPort, m_sckPinSource, afSpi);
+	GPIO_PinAFConfig(m_mosiPort, m_mosiPinSource, afSpi);
+  GPIO_PinAFConfig(m_misoPort, m_misoPinSource, afSpi);
   
   /*!< SPI Config */
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
