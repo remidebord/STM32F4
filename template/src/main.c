@@ -1,35 +1,28 @@
 #include "main.h"
+	
+DigitalOut led4(PD12);
+DigitalOut led6(PD15);
+	
+// DigitalIn pushButton(PA0);
+InterruptIn pushButton(PA0);
 
-// SPI config (CS, SCK, MOSI, MISO)
-SPI spi(SPI5, PC2, PF7, PF9, PF8);
-
-// LCD (DC, RST)
-LCD lcd(&spi, PD13, PG13);
+void Push(void)
+{
+	led4 = !led4;
+}
 
 int main(void)
 {
 	Systick_Init();
 	
-	lcd.init();
+	pushButton.rise(&Push);
 	
-	Delay(10);
-	
-	lcd.rect(0, 0, 240, 320, BLACK, 1);	
-	lcd.line(0, 0, 120, 120, WHITE);	
-	lcd.rect(10, 10, 30, 30, RED, 0);	
-	lcd.circle(100, 60, 50, BLUE);
-	
-	lcd.rotate(2);
-	
-	lcd.line(0, 0, 120, 120, WHITE);
-	lcd.rect(10, 10, 30, 30, RED, 0);
-	lcd.circle(100, 60, 50, BLUE);
-	
-	lcd.txt((char*)"Hello world!\0", 12);
-	
-	lcd.cursor(0, 50);
-	
-	lcd.txt((char*)"Hello world!\0", 12, 2, WHITE, RED);
-	
-  while (1);
+  while (1)
+  {
+		led6 = !led6;
+		Delay(100);
+		
+// 		if(pushButton) led2 = 1;
+// 		else led2 = 0;
+  }
 }
